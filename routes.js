@@ -45,7 +45,17 @@ router.delete('/:qID/answers/:aID', (req, res) => {
     });
 });
 
-router.post('/:qID/answers/:aID/vote-:dir', (req, res) => {
+function validateVoteId(req, res, next) {
+    if(req.params.dir.search(/^up|down$/) === -1) {
+        const err = new Error('not Found');
+        err.status = 404;
+        next(err);
+    } else {
+        next();
+    }
+}
+
+router.post('/:qID/answers/:aID/vote-:dir', validateVoteId, (req, res) => {
     res.json({
         response: 'You sent me a POST request to /vote-' + req.params.dir,
         questionID: req.params.qID,
